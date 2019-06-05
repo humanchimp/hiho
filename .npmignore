@@ -3,3 +3,4 @@ yarn.lock
 src
 spec
 tsconfig.json
+.stablerc.yml
