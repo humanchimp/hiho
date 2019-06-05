@@ -1,0 +1,72 @@
+[
+  {
+    "focused": true,
+    "description": "describe.only nested should be focused",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only nested deeply nested should be focused",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested should be focused 1",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested deeply nested should be focused 1",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested should be focused 2",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested deeply nested should be focused 2",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested should be focused 3",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.each.only describe.each.only [table] nested deeply nested should be focused 3",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested should be focused 1",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested deeply nested should be focused 1",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested should be focused 2",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested deeply nested should be focused 2",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested should be focused 3",
+    "ok": true
+  },
+  {
+    "focused": true,
+    "description": "describe.only.each describe.only.each [table] nested deeply nested should be focused 3",
+    "ok": true
+  }
+]

@@ -1,6 +1,6 @@
-# 🐣hatch
+# 🐎 hiho
 
-rollup + typescript boilerplate
+the testing framework from [stable](https://github.com/humanchimp/stable)
 
 ## license
 

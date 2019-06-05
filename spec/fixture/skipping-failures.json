@@ -1,0 +1,22 @@
+[
+  {
+    "description": "skipping failed tests should work",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "skipping failed tests should work",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "skipping failed tests a nested suite should work",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "skipping failed tests a skipped suite should work",
+    "ok": true,
+    "skipped": true
+  }
+]

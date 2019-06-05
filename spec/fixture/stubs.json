@@ -1,0 +1,12 @@
+[
+  {
+    "description": "stubs should be possible to have a stub",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "stubs it should be possible to skip a stub",
+    "ok": true,
+    "skipped": true
+  }
+]

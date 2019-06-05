@@ -1,0 +1,24 @@
+[
+  {
+    "description": "test passes asynchronously",
+    "ok": true
+  },
+  {
+    "description": "test passes synchronously",
+    "ok": true
+  },
+  {
+    "description": "test fails asynchronously",
+    "ok": false,
+    "reason": {
+      "message": "contrived"
+    }
+  },
+  {
+    "description": "test fails synchronously",
+    "ok": false,
+    "reason": {
+      "message": "contrived 2"
+    }
+  }
+]

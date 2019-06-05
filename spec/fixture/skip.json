@@ -1,0 +1,42 @@
+[
+  {
+    "description": "describe.skip nested should be skipped",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.skip nested deeply nested should be skipped",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested should be skipped 1",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested deeply nested should be skipped 1",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested should be skipped 2",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested deeply nested should be skipped 2",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested should be skipped 3",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "describe.each.skip describe.each.skip [table] nested deeply nested should be skipped 3",
+    "ok": true,
+    "skipped": true
+  }
+]

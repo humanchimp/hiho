@@ -1,0 +1,42 @@
+[
+  {
+    "description": "fdescribe nested should be focused",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribe nested deeply nested should be focused",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested should be focused 1",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested deeply nested should be focused 1",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested should be focused 2",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested deeply nested should be focused 2",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested should be focused 3",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "fdescribeEach fdescribeEach [table] nested deeply nested should be focused 3",
+    "focused": true,
+    "ok": true
+  }
+]

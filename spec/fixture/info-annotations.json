@@ -1,0 +1,17 @@
+[
+  {
+    "description": "info annotations https://www.example.com",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "info annotations /relative.html",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "info annotations mailto:christopherthorn82@gmail.com",
+    "ok": true,
+    "skipped": true
+  }
+]

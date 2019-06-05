@@ -1,0 +1,8 @@
+extends: ../.stablerc.yml
+runners:
+- isolate
+- chrome
+- jsdom
+plugins:
+- - fixture
+  - include: ./fixture/**/*

@@ -1,0 +1,32 @@
+[
+  {
+    "description": "focus on a spec this one is focused",
+    "ok": true,
+    "focused": true
+  },
+  {
+    "description": "focus on a spec this one is not",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "focus on a suite this one is focused",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "focus on a suite nested this one is also focused",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "focus on a suite nested deeply nested even this one is focused",
+    "focused": true,
+    "ok": true
+  },
+  {
+    "description": "verify should have run only the focused specs",
+    "ok": true,
+    "focused": true
+  }
+]

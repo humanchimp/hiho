@@ -1,0 +1,14 @@
+[
+  {
+    "description": "hooks spec 1",
+    "ok": true
+  },
+  {
+    "description": "hooks spec 2",
+    "ok": true
+  },
+  {
+    "description": "accumulation should have run the hooks in the correct order",
+    "ok": true
+  }
+]

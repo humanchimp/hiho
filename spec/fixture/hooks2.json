@@ -1,0 +1,33 @@
+[
+  {
+    "description": "capture should run",
+    "ok": true
+  },
+  {
+    "description": "capture should not run",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "capture suite should run",
+    "ok": true
+  },
+  {
+    "description": "capture suite should not run",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "capture suite nested suite should run",
+    "ok": true
+  },
+  {
+    "description": "capture suite nested suite should not run",
+    "ok": true,
+    "skipped": true
+  },
+  {
+    "description": "check should have fired the hooks in the expected order",
+    "ok": true
+  }
+]
