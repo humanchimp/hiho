@@ -6,7 +6,6 @@
     "declarationMap": true,
     "module": "commonjs",
     "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
-  },
+    "allowSyntheticDefaultImports": true
+  }
 }
