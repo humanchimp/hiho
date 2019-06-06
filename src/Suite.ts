@@ -1,8 +1,8 @@
 import {
-  Suite as SuiteInterface,
+  ISuite,
   SuiteParams,
   SuiteClosure,
-  Spec as SpecInterface,
+  ISpec,
   Job,
   Effect,
   Report,
@@ -32,28 +32,15 @@ interface ComputedHooks {
   afterEach: Effect[];
 }
 
-export class Suite implements SuiteInterface {
-  static empty() {
-    return new this(null);
-  }
 
-  static from(suites: Suite[]): Suite {
-    return suites.length === 1
-      ? suites[0]
-      : suites.reduce((memo, suite) => {
-          memo.suites.push(suite);
-          suite.parent = memo;
-          return memo;
-        }, this.empty());
-  }
+export class Suite implements ISuite {
+  static empty = empty;
 
-  static of(...suites: Suite[]): Suite {
-    return this.from(suites);
-  }
+  static from = from;
 
-  static reducer(a: Suite, b: Suite): Suite {
-    return a.concat(b);
-  }
+  static of = of;
+
+  static reducer = reducer;
 
   description: string;
 
@@ -61,9 +48,9 @@ export class Suite implements SuiteInterface {
 
   focused: boolean;
 
-  suites: SuiteInterface[] = [];
+  suites: ISuite[] = [];
 
-  parent?: SuiteInterface;
+  parent?: ISuite;
 
   specs: Spec[] = [];
 
@@ -286,8 +273,8 @@ export class Suite implements SuiteInterface {
     }
   }
 
-  *andParents(): IterableIterator<SuiteInterface> {
-    let suite: SuiteInterface = this;
+  *andParents(): IterableIterator<ISuite> {
+    let suite: ISuite = this;
 
     do {
       yield suite;
@@ -378,7 +365,7 @@ export class Suite implements SuiteInterface {
 
   private async *runHook(
     hook: Hook,
-    context: SpecInterface | SuiteInterface,
+    context: ISpec | ISuite,
   ): AsyncIterableIterator<Report> {
     const reason = await runTest(hook.effect, context);
 
@@ -392,7 +379,7 @@ export class Suite implements SuiteInterface {
     }
   }
 
-  async *runSpec(spec: SpecInterface): AsyncIterableIterator<Report> {
+  async *runSpec(spec: ISpec): AsyncIterableIterator<Report> {
     yield* this.open();
     if (!spec.skipped) {
       for (const effect of this.computedHooks.beforeEach) {
@@ -431,7 +418,7 @@ export class Suite implements SuiteInterface {
     this.opened = false;
   }
 
-  private async reportForSpec(spec: SpecInterface): Promise<Report> {
+  private async reportForSpec(spec: ISpec): Promise<Report> {
     const description = this.prefixed(spec.description);
     const { test, focused, meta } = spec;
     let { skipped } = spec;
@@ -501,18 +488,18 @@ export class Suite implements SuiteInterface {
     this.computedHooks = { beforeEach, afterEach };
   }
 
-  private countSpecsBySuite(jobs: Job[]): Map<SuiteInterface, number> {
+  private countSpecsBySuite(jobs: Job[]): Map<ISuite, number> {
     return jobs.reduce((memo, { suite }: Job) => {
       for (const s of suite.andParents()) {
         inc(memo, s, 1);
       }
       return memo;
-    }, new Map<SuiteInterface, number>());
+    }, new Map<ISuite, number>());
   }
 
   private async *countSpec(
-    counted: Map<SuiteInterface, number>,
-    suite: SuiteInterface,
+    counted: Map<ISuite, number>,
+    suite: ISuite,
   ) {
     for (const s of suite.andParents()) {
       if (inc(counted, s, -1) === 0) {
@@ -545,4 +532,26 @@ function inc(map, key, offset) {
 
   map.set(key, next);
   return next;
+}
+
+export function of(...suites: Suite[]): Suite {
+  return Suite.from(suites);
+}
+
+export function from(suites: Suite[]): Suite {
+  return suites.length === 1
+    ? suites[0]
+    : suites.reduce((memo, suite) => {
+        memo.suites.push(suite);
+        suite.parent = memo;
+        return memo;
+      }, Suite.empty());
+}
+
+export function empty(): Suite {
+  return new Suite(null);
+}
+
+export function reducer(a: Suite, b: Suite): Suite {
+  return a.concat(b);
 }

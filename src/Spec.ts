@@ -1,13 +1,13 @@
 import {
-  Spec as SpecInterface,
+  ISpec,
   SpecMeta,
   Effect,
   SpecParams,
-  Suite,
+  ISuite,
   Report,
 } from "./interfaces";
 
-export class Spec implements SpecInterface {
+export class Spec implements ISpec {
   description: string;
 
   test: Effect;
@@ -18,7 +18,7 @@ export class Spec implements SpecInterface {
 
   meta: SpecMeta = {};
 
-  parent: Suite;
+  parent: ISuite;
 
   constructor({
     description,

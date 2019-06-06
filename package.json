@@ -24,5 +24,10 @@
   },
   "nyc": {
     "instrument": false
+  },
+  "prettier": {
+    "proseWrap": "never",
+    "singleQuote": false,
+    "trailingComma": "all"
   }
 }

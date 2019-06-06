@@ -1,0 +1,12 @@
+steps:
+- name: gcr.io/cloud-builders/git
+  args: ['fetch', '--unshallow']
+- name: node:11
+  entrypoint: yarn
+  args: ['install']
+- name: node:11
+  entrypoint: yarn
+  args: ['build']
+- name: 'gcr.io/$PROJECT_ID/ci-node-chrome'
+  entrypoint: yarn
+  args: ['test', '--runner=chrome']

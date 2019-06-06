@@ -1,5 +1,5 @@
 import {
-  Selection as SelectionInterface,
+  ISelection,
   SelectionParams,
   JobPredicate,
   Job,
@@ -8,7 +8,7 @@ import { partitionRangeForTotal } from "./partititionRangeForTotal";
 
 const { assign } = Object;
 
-export class Selection implements SelectionInterface {
+export class Selection implements ISelection {
   grep: RegExp;
 
   filter: string;

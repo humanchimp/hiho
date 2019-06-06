@@ -1,4 +1,4 @@
-import { DslParams, Suite } from "./interfaces";
+import { DslParams, ISuite } from "./interfaces";
 import { blocks as names } from "./names";
 import { dethunk } from "./dethunk";
 
@@ -9,7 +9,7 @@ export async function dsl({
   helpers = Object.create(null),
   /*description = null,*/
   listeners = {},
-}: DslParams): Promise<Suite> {
+}: DslParams): Promise<ISuite> {
   return dethunk(
     (...blocks) =>
       new Function(...names, ...keys(helpers), code)(
