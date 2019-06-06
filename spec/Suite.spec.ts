@@ -1,7 +1,7 @@
 /* eslint no-undef: off, no-unused-vars: off, @typescript-eslint/no-unused-vars: off */
 import { expect } from "chai";
 import { spy, SinonSpy } from "sinon";
-import { Suite as SuiteInterface } from "../src/interfaces";
+import { ISuite } from "../src/interfaces";
 import { Suite } from "../src/Suite";
 import { Hooks } from "../src/Hooks";
 import { Listeners } from "../src/Listeners";
@@ -982,7 +982,7 @@ describe("new Suite(description)", () => {
     });
 
     describe("when the suite has parents", () => {
-      let s1: SuiteInterface, s2: SuiteInterface, s3: SuiteInterface;
+      let s1: ISuite, s2: ISuite, s3: ISuite;
 
       beforeEach(() => {
         subject.describe(null, s => (s1 = s));

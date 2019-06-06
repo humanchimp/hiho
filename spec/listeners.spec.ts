@@ -1,4 +1,4 @@
-import { Suite } from "../src/interfaces";
+import { ISuite } from "../src/interfaces";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { run } from "../src/run";
@@ -133,7 +133,7 @@ describe("complete listener", () => {
 });
 
 async function runWithListeners(listeners, spy = specSpy) {
-  const suite: Suite = await dsl({
+  const suite: ISuite = await dsl({
     ...{
       code,
       listeners,

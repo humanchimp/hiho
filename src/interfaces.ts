@@ -1,57 +1,57 @@
-export interface Suite {
+export interface ISuite {
   description: String;
-  parent?: Suite;
+  parent?: ISuite;
   skipped: boolean;
   focused: boolean;
-  suites: Suite[];
-  specs: Spec[];
+  suites: ISuite[];
+  specs: ISpec[];
   hooks: Hooks;
   listeners: Listeners;
   isFocusMode: boolean;
   isDeeplyFocused: boolean;
   orderedJobs(): IterableIterator<Job>;
-  andParents(): IterableIterator<Suite>;
+  andParents(): IterableIterator<ISuite>;
   describe(
     description: string,
     closure: SuiteClosure,
     options?: SuiteParams,
-  ): Suite;
+  ): ISuite;
   xdescribe(
     description: string,
     closure: SuiteClosure,
     options?: SuiteParams,
-  ): Suite;
+  ): ISuite;
   fdescribe(
     description: string,
     closure: SuiteClosure,
     options?: SuiteParams,
-  ): Suite;
+  ): ISuite;
   describeEach(
     description: string,
     table: any[],
     closure: TableClosure,
     options?: SuiteParams,
-  ): Suite;
+  ): ISuite;
   xdescribeEach(
     description: string,
     table: any[],
     closure: TableClosure,
     options?: SuiteParams,
-  ): Suite;
+  ): ISuite;
   fdescribeEach(
     description: string,
     table: any[],
     closure: TableClosure,
     options?: SuiteParams,
-  ): Suite;
-  it(description: string, test?: Effect, options?: SpecOptions): Suite;
-  xit(description: string, test?: Effect, options?: SpecOptions): Suite;
-  fit(description: string, test: Effect, options?: SpecOptions): Suite;
-  beforeAll(hook: Effect): Suite;
-  beforeEach(hook: Effect): Suite;
-  afterAll(hook: Effect): Suite;
-  afterEach(hook: Effect): Suite;
-  info(info: any): Suite;
+  ): ISuite;
+  it(description: string, test?: Effect, options?: SpecOptions): ISuite;
+  xit(description: string, test?: Effect, options?: SpecOptions): ISuite;
+  fit(description: string, test: Effect, options?: SpecOptions): ISuite;
+  beforeAll(hook: Effect): ISuite;
+  beforeEach(hook: Effect): ISuite;
+  afterAll(hook: Effect): ISuite;
+  afterEach(hook: Effect): ISuite;
+  info(info: any): ISuite;
   prefixed(description: string): string;
   reports(
     sort?: Sorter,
@@ -63,7 +63,7 @@ export interface Suite {
   ): AsyncIterableIterator<Plan | Report | Summary>;
   open(): AsyncIterableIterator<Report>;
   close(): AsyncIterableIterator<Report>;
-  runSpec(spec: Spec): AsyncIterableIterator<Report>;
+  runSpec(spec: ISpec): AsyncIterableIterator<Report>;
 }
 
 export interface SpecOptions {
@@ -74,12 +74,12 @@ export interface SpecOptions {
 
 export interface SpecParams extends SpecOptions {
   description: string;
-  parent?: Suite;
+  parent?: ISuite;
 }
 
-export interface Spec extends SpecParams {
+export interface ISpec extends SpecParams {
   meta: SpecMeta;
-  timeout(ms: number): Spec;
+  timeout(ms: number): ISpec;
   run(): AsyncIterableIterator<Report>;
 }
 
@@ -89,8 +89,8 @@ export interface SpecMeta {
 }
 
 export interface Job {
-  spec: Spec;
-  suite: Suite;
+  spec: ISpec;
+  suite: ISuite;
   series: number;
 }
 
@@ -101,7 +101,7 @@ export interface Report extends SpecOptions {
   startedAt?: number;
   endedAt?: number;
   elapsed?: number;
-  suite?: Suite;
+  suite?: ISuite;
   [key: string]: any;
 }
 
@@ -133,13 +133,13 @@ export interface ConsoleMessage {
 }
 
 export interface SuiteParams {
-  parent?: Suite;
+  parent?: ISuite;
   skipped?: boolean;
   focused?: boolean;
   listeners?: ListenersParam;
 }
 
-export interface Selection {
+export interface ISelection {
   filter?: string;
   grep?: RegExp;
   predicate: JobPredicate;
@@ -178,11 +178,11 @@ export interface Effect {
 }
 
 export interface SuiteClosure {
-  (suite: Suite): void;
+  (suite: ISuite): void;
 }
 
 export interface TableClosure {
-  (suite: Suite, table: any[]): void;
+  (suite: ISuite, table: any[]): void;
 }
 
 export interface SpecClosure {
@@ -213,7 +213,7 @@ export interface Range {
 
 export interface RunGenerator {
   (
-    suites: Suite | Suite[],
+    suites: ISuite | ISuite[],
     sort?: Sorter,
     predicate?: JobPredicate,
   ): AsyncIterableIterator<any>;
@@ -265,20 +265,20 @@ export interface DslTableClosure {
 }
 
 export interface DslDescribeBlock {
-  (description: string, closure: DslSuiteClosure): Suite;
+  (description: string, closure: DslSuiteClosure): ISuite;
   skip?: DslDescribeBlock;
   only?: DslDescribeBlock;
   each?: DslDescribeEachBlock;
 }
 
 export interface DslDescribeEachBlock {
-  (description: string, table: any, closure: DslTableClosure): Suite;
+  (description: string, table: any, closure: DslTableClosure): ISuite;
   skip?: DslDescribeEachBlock;
   only?: DslDescribeEachBlock;
 }
 
 export interface DslItBlock {
-  (description: string, closure: SpecClosure): Spec;
+  (description: string, closure: SpecClosure): ISpec;
   skip?: DslItBlock;
   only?: DslItBlock;
 }

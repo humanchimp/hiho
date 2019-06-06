@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { spy } from "sinon";
 import { Spec } from "../src/Spec";
-import { Suite } from "../src/interfaces";
+import { ISuite } from "../src/interfaces";
 
 describe("new Spec() properties of new instances", () => {
   let spec;
@@ -42,7 +42,7 @@ describe(".run()", () => {
     const runSpecSpy = spy();
     const subject = new Spec({
       description: "test",
-      parent: ({ runSpec: runSpecSpy } as any) as Suite,
+      parent: ({ runSpec: runSpecSpy } as any) as ISuite,
     });
 
     await subject.run();

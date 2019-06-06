@@ -3,7 +3,7 @@ import typescript from "typescript";
 import packageJson from "./package.json";
 
 export default {
-  input: "src/lib.ts",
+  input: "src/index.ts",
   output: [
     {
       format: "cjs",
@@ -19,7 +19,7 @@ export default {
       format: "iife",
       file: packageJson.browser,
       sourcemap: true,
-      name: "hatch"
+      name: "hiho"
     },
   ],
   plugins: [ts({ typescript })]
