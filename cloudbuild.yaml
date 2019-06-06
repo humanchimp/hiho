@@ -6,9 +6,6 @@ steps:
   args: ['install']
 - name: node:11
   entrypoint: yarn
-  args: ['lint']
-- name: node:11
-  entrypoint: yarn
   args: ['build']
 - name: 'gcr.io/$PROJECT_ID/ci-node-chrome'
   entrypoint: yarn
