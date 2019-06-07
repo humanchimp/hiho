@@ -1,6 +1,6 @@
 {
   "name": "@topl/hiho",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a testing framework",
   "author": "Lil Thorny <hi@lilthorny.party>",
   "main": "dist/cjs/hiho.js",
