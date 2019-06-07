@@ -7,3 +7,4 @@ export * from "./reports";
 export * from "./dsl";
 export * from "./shuffle";
 export * from "./plugins";
+export * from "./interfaces";
