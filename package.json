@@ -16,7 +16,7 @@
   "devDependencies": {
     "@topl/lope": "^1.0.0",
     "@topl/stable": "^0.5.22",
-    "@wessberg/rollup-plugin-ts": "^1.1.54",
+    "@wessberg/rollup-plugin-ts": "^1.1.55",
     "chai": "^4.2.0",
     "nyc": "^14.1.1",
     "rollup": "^1.14.3",
