@@ -1,6 +1,6 @@
 {
   "name": "@topl/hiho",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "a testing framework",
   "author": "Lil Thorny <hi@lilthorny.party>",
   "main": "dist/cjs/hiho.js",
@@ -14,7 +14,6 @@
     "prepublishOnly": "yarn test && yarn build && mv dist/cjs/hiho.d.ts* dist && rm dist/*/hiho.d.ts*"
   },
   "devDependencies": {
-    "@topl/lope": "^1.0.0",
     "@topl/stable": "^0.5.22",
     "@wessberg/rollup-plugin-ts": "^1.1.55",
     "chai": "^4.2.0",

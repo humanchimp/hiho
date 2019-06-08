@@ -6,6 +6,7 @@ export interface ISuite {
   suites: ISuite[];
   specs: ISpec[];
   hooks: Hooks;
+  meta: SpecMeta;
   listeners: Listeners;
   isFocusMode: boolean;
   isDeeplyFocused: boolean;
@@ -44,13 +45,13 @@ export interface ISuite {
     closure: TableClosure,
     options?: SuiteParams,
   ): ISuite;
-  it(description: string, test?: Effect, options?: SpecOptions): ISuite;
-  xit(description: string, test?: Effect, options?: SpecOptions): ISuite;
-  fit(description: string, test: Effect, options?: SpecOptions): ISuite;
-  beforeAll(hook: Effect): ISuite;
-  beforeEach(hook: Effect): ISuite;
-  afterAll(hook: Effect): ISuite;
-  afterEach(hook: Effect): ISuite;
+  it(description: string, test?: Effect, options?: SpecOptions): ISpec;
+  xit(description: string, test?: Effect, options?: SpecOptions): ISpec;
+  fit(description: string, test: Effect, options?: SpecOptions): ISpec;
+  beforeAll(hook: Effect): IHook;
+  beforeEach(hook: Effect): IHook;
+  afterAll(hook: Effect): IHook;
+  afterEach(hook: Effect): IHook;
   info(info: any): ISuite;
   prefixed(description: string): string;
   reports(
@@ -64,34 +65,45 @@ export interface ISuite {
   open(): AsyncIterableIterator<Report>;
   close(): AsyncIterableIterator<Report>;
   runSpec(spec: ISpec): AsyncIterableIterator<Report>;
+  runHook(hook: IHook, context: ISpec | ISuite): AsyncIterableIterator<Report>;
+  concat(a: ISuite, b: ISuite): ISuite;
 }
 
 export interface SpecOptions {
-  test?: Effect;
+  hook?: Effect;
   focused?: boolean;
   skipped?: boolean;
 }
 
 export interface SpecParams {
-  test?: Effect;
+  hook?: Effect;
   focused?: boolean;
   skipped?: boolean;
   description: string;
   parent?: ISuite;
-  infos?: any[];
   timeout?: number;
 }
 
-export interface ISpec {
-  test?: Effect;
+export interface IHook {
+  name: HookName;
+  effect: Effect;
+  meta: SpecMeta;
+  parent: ISuite;
+  timeout(ms: number): IHook;
+  run(): AsyncIterableIterator<Report>;
+}
+
+export type HookName =
+  | "beforeEach"
+  | "afterEach"
+  | "beforeAll"
+  | "afterAll"
+  | "spec";
+
+export interface ISpec extends IHook {
   focused?: boolean;
   skipped?: boolean;
-  meta: SpecMeta;
   description: string;
-  parent?: ISuite;
-  infos?: any[];
-  timeout(ms: number): ISpec;
-  run(): AsyncIterableIterator<Report>;
 }
 
 export interface SpecMeta {
@@ -148,7 +160,6 @@ export interface SuiteParams {
   skipped?: boolean;
   focused?: boolean;
   listeners?: ListenersParam;
-  infos?: any[];
   timeout?: number;
 }
 
@@ -174,16 +185,11 @@ export interface Listener {
 }
 
 export interface Hooks {
-  beforeAll: Effect[];
-  afterAll: Effect[];
-  beforeEach: Effect[];
-  afterEach: Effect[];
-  run(hookName: string): IterableIterator<Hook>;
-}
-
-export interface Hook {
-  name: string;
-  effect: Effect;
+  beforeAll: IHook[];
+  afterAll: IHook[];
+  beforeEach: IHook[];
+  afterEach: IHook[];
+  run(hookName: string): IterableIterator<IHook>;
 }
 
 export interface Effect {

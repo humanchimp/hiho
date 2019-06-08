@@ -1,4 +1,5 @@
 import {
+  ISuite,
   RunParams,
   Sorter,
   Plan,
@@ -9,12 +10,12 @@ import {
 import { Suite } from "./Suite";
 import { shuffle } from "./shuffle";
 
-export async function run(suite: Suite): Promise<void>;
-export async function run(suites: Suite[]): Promise<void>;
-export async function run(suite: Suite, params: RunParams): Promise<void>;
-export async function run(suites: Suite[], params: RunParams): Promise<void>;
+export async function run(suite: ISuite): Promise<void>;
+export async function run(suites: ISuite[]): Promise<void>;
+export async function run(suite: ISuite, params: RunParams): Promise<void>;
+export async function run(suites: ISuite[], params: RunParams): Promise<void>;
 export async function run(
-  suites: Suite | Suite[],
+  suites: ISuite | ISuite[],
   {
     generate = generator,
     perform = console.log, // eslint-disable-line
@@ -28,31 +29,31 @@ export async function run(
 }
 
 export function generator(
-  suite: Suite,
+  suite: ISuite,
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export function generator(
-  suites: Suite[],
+  suites: ISuite[],
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export function generator(
-  suite: Suite,
+  suite: ISuite,
   sort: Sorter,
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export function generator(
-  suites: Suite[],
+  suites: ISuite[],
   sort: Sorter,
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export function generator(
-  suite: Suite,
+  suite: ISuite,
   sort: Sorter,
   predicate: JobPredicate,
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export function generator(
-  suites: Suite[],
+  suites: ISuite[],
   sort: Sorter,
   predicate: JobPredicate,
 ): AsyncIterableIterator<Plan | Report | Summary>;
 export async function* generator(
-  suites: Suite | Suite[],
+  suites: ISuite | ISuite[],
   sort: Sorter = shuffle,
   predicate: JobPredicate = Boolean,
 ): AsyncIterableIterator<Plan | Report | Summary> {

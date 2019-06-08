@@ -1,7 +1,7 @@
 /* eslint no-undef: off, no-unused-vars: off, @typescript-eslint/no-unused-vars: off */
 import { expect } from "chai";
 import { spy, SinonSpy } from "sinon";
-import { ISuite } from "../src/interfaces";
+import { ISuite, HookName, Effect, ISpec } from "../src/interfaces";
 import { Suite } from "../src/Suite";
 import { Hooks } from "../src/Hooks";
 import { Listeners } from "../src/Listeners";
@@ -68,13 +68,13 @@ describe("static factories/explicit casts", () => {
 });
 
 describe("Suite.reducer", () => {
-  let subject: Suite;
+  let subject: ISuite;
 
   beforeEach(() => {
     subject = [
-      new Suite(null).it("a"),
-      new Suite(null).it("b"),
-      new Suite(null).it("c"),
+      new Suite(null).it("a").parent,
+      new Suite(null).it("b").parent,
+      new Suite(null).it("c").parent,
     ].reduce(Suite.reducer);
   });
 
@@ -171,9 +171,9 @@ describe("new Suite(description)", () => {
 
         subject
           .it("test 1", spec1Spy)
-          .it("test 2", spec2Spy)
-          .it("stub")
-          .xit("skipped", spec4Spy);
+          .parent.it("test 2", spec2Spy)
+          .parent.it("stub")
+          .parent.xit("skipped", spec4Spy);
 
         subject.isFocusMode = true;
       });
@@ -261,19 +261,19 @@ describe("new Suite(description)", () => {
         subject.describe("outer 1", s =>
           s
             .describe("inner 1", s2 =>
-              s2.describe("nested 1", noop).describe("nested 2", noop),
+              s2.describe("nested 1", noop).parent.describe("nested 2", noop),
             )
             .describe("inner 2", s2 =>
-              s2.describe("nested 3", noop).describe("nested 4", noop),
+              s2.describe("nested 3", noop).parent.describe("nested 4", noop),
             ),
         );
         subject.describe("outer 2", s =>
           s
             .describe("inner 3", s2 =>
-              s2.describe("nested 5", noop).describe("nested 6", noop),
+              s2.describe("nested 5", noop).parent.describe("nested 6", noop),
             )
             .describe("inner 4", s2 =>
-              s2.describe("nested 7", noop).describe("nested 8", noop),
+              s2.describe("nested 7", noop).parent.describe("nested 8", noop),
             ),
         );
       });
@@ -324,7 +324,7 @@ describe("new Suite(description)", () => {
 
     describe("when a child spec is focused", () => {
       beforeEach(() => {
-        subject.fit("focused", noop).it("not focused for control sake");
+        subject.fit("focused", noop).parent.it("not focused for control sake");
       });
 
       it("should be true", () => {
@@ -336,7 +336,7 @@ describe("new Suite(description)", () => {
       beforeEach(() => {
         subject
           .fdescribe("focused", noop)
-          .describe("not focused for control sake", noop);
+          .parent.describe("not focused for control sake", noop);
       });
 
       it("should be true", () => {
@@ -348,8 +348,8 @@ describe("new Suite(description)", () => {
       beforeEach(() => {
         subject.describe("outer", s => {
           s.describe("inner 1", s2 => {
-            s2.fit("focused", noop).it("not focused for control sake");
-          }).describe("inner 2", s2 => {
+            s2.fit("focused", noop).parent.it("not focused for control sake");
+          }).parent.describe("inner 2", s2 => {
             s2.it("not focused for control sake");
           });
         });
@@ -363,7 +363,7 @@ describe("new Suite(description)", () => {
     describe("when a descendant suite is focused", () => {
       beforeEach(() => {
         subject.describe("outer", s => {
-          s.fdescribe("focused", noop).describe(
+          s.fdescribe("focused", noop).parent.describe(
             "not focused for control sake",
             noop,
           );
@@ -379,11 +379,11 @@ describe("new Suite(description)", () => {
       beforeEach(() => {
         subject.describe("outer", s => {
           s.describe("inner 1", s2 => {
-            s2.it("not focused for control sake").it(
+            s2.it("not focused for control sake").parent.it(
               "not focused for control sake",
             );
-          }).describe("inner 2", s2 => {
-            s2.it("not focused for control sake").it(
+          }).parent.describe("inner 2", s2 => {
+            s2.it("not focused for control sake").parent.it(
               "not focused for control sake",
             );
           });
@@ -460,7 +460,9 @@ describe("new Suite(description)", () => {
 
       describe(signature, () => {
         beforeEach(() => {
-          expect(thunk(specDescription), "it returns `this`").to.equal(subject);
+          expect(thunk(specDescription), "it returns the spec").to.equal(
+            subject.specs[subject.specs.length - 1],
+          );
         });
 
         it("should append a spec", () => {
@@ -468,7 +470,7 @@ describe("new Suite(description)", () => {
         });
 
         describe("the appended spec", () => {
-          let spec;
+          let spec: ISpec;
 
           beforeEach(() => {
             [spec] = subject.specs;
@@ -487,7 +489,7 @@ describe("new Suite(description)", () => {
           });
 
           it("should have the given test, if any", () => {
-            expect(spec.test).to.equal(expected.test);
+            expect(spec.effect).to.equal(expected.test);
           });
         });
       });
@@ -555,9 +557,10 @@ describe("new Suite(description)", () => {
 
       describe(signature, () => {
         beforeEach(() => {
-          expect(thunk(suiteDescription), "it returns `this`").to.equal(
-            subject,
-          );
+          expect(
+            thunk(suiteDescription),
+            "it returns the child suite",
+          ).to.equal(subject.suites[subject.suites.length - 1]);
         });
 
         it("should append a spec", () => {
@@ -603,7 +606,9 @@ describe("new Suite(description)", () => {
         it("should append the hooks in the correct order", () => {
           subject[hook](a);
           subject[hook](b);
-          expect(subject.hooks[hook]).to.eql(expected);
+          expect(subject.hooks[hook as HookName].map(it => it.effect)).to.eql(
+            expected,
+          );
         });
 
         it("should call the hooks when the spec is run", async () => {
@@ -634,13 +639,13 @@ describe("new Suite(description)", () => {
 
     for await (const _ of new Suite(null)
       .it("test a", specSpyA)
-      .describe("suite a", s => s.it("test b", specSpyB))
-      .describe("suite b", s =>
+      .parent.describe("suite a", s => s.it("test b", specSpyB))
+      .parent.describe("suite b", s =>
         s.describe("suite c", s2 => s2.it("test c", specSpyC)),
       )
-      .beforeAll(beforeSpy)
-      .afterAll(afterSpy)
-      .reports());
+      .parent.beforeAll(beforeSpy)
+      .parent.afterAll(afterSpy)
+      .parent.reports());
 
     expect(beforeSpy.calledOnce).to.be.true;
     expect(specSpyA.calledOnce).to.be.true;
@@ -665,8 +670,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should return an empty async iterator", async () => {
@@ -700,8 +705,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should bail midway", async () => {
@@ -715,7 +720,7 @@ describe("new Suite(description)", () => {
         it("should not run the specs", async () => {
           const specSpy = spy();
 
-          subject.it("a spec", specSpy).it("another spec", specSpy);
+          subject.it("a spec", specSpy).parent.it("another spec", specSpy);
           await exhaust(subject.reports());
           expect(specSpy.called).to.be.false;
         });
@@ -729,8 +734,8 @@ describe("new Suite(description)", () => {
 
       const subject = new Suite("reopen an open suite")
         .beforeAll(spy1)
-        .beforeAll(spy2)
-        .it("does nothing", specSpy);
+        .parent.beforeAll(spy2)
+        .parent.it("does nothing", specSpy).parent;
 
       await exhaust(subject.open());
       await exhaust(subject.open()); // reopening
@@ -749,9 +754,9 @@ describe("new Suite(description)", () => {
         .describe("open a child suite", s =>
           s
             .describe("open a grandchild suite", s2 => s2.beforeAll(innerSpy))
-            .beforeAll(middleSpy),
+            .parent.beforeAll(middleSpy),
         )
-        .beforeAll(outerSpy);
+        .parent.beforeAll(outerSpy).parent;
       const innerSuite = subject.suites[0].suites[0];
 
       await exhaust(innerSuite.open());
@@ -767,7 +772,7 @@ describe("new Suite(description)", () => {
       it("should not call the `afterAll` hooks", async () => {
         const hookSpy = spy();
 
-        subject.afterAll(hookSpy).afterAll(hookSpy);
+        subject.afterAll(hookSpy).parent.afterAll(hookSpy);
         await exhaust(subject.close());
         expect(hookSpy.called).to.be.false;
       });
@@ -785,8 +790,8 @@ describe("new Suite(description)", () => {
 
         subject
           .afterAll(spy1)
-          .afterAll(spy2)
-          .afterAll(spy3);
+          .parent.afterAll(spy2)
+          .parent.afterAll(spy3);
 
         await exhaust(subject.open());
       });
@@ -822,8 +827,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should bail midway", async () => {
@@ -859,8 +864,8 @@ describe("new Suite(description)", () => {
           () =>
             subject
               .it("1")
-              .it("2")
-              .it("3"),
+              .parent.it("2")
+              .parent.it("3"),
           () => [
             {
               suite: subject,
@@ -885,18 +890,18 @@ describe("new Suite(description)", () => {
               .describe("A", s =>
                 s
                   .it("1")
-                  .it("2")
-                  .it("3"),
+                  .parent.it("2")
+                  .parent.it("3"),
               )
-              .describe("B", s =>
+              .parent.describe("B", s =>
                 s
                   .it("4")
-                  .it("5")
-                  .it("6"),
+                  .parent.it("5")
+                  .parent.it("6"),
               )
-              .it("7")
-              .it("8")
-              .it("9"),
+              .parent.it("7")
+              .parent.it("8")
+              .parent.it("9"),
           () => [
             {
               suite: subject,
@@ -992,11 +997,14 @@ describe("new Suite(description)", () => {
       "scenario",
       [
         [new Suite("hi"), "hi milo"],
-        [new Suite("good").describe("dog", noop).suites[0], "good dog milo"],
+        [
+          new Suite("good").describe("dog", noop).parent.suites[0],
+          "good dog milo",
+        ],
         [
           new Suite("roll")
             .describe("over", noop)
-            .suites[0].describe("fetch", noop).suites[0],
+            .parent.suites[0].describe("fetch", noop).parent.suites[0],
           "roll over fetch milo",
         ],
       ],
@@ -1009,10 +1017,10 @@ describe("new Suite(description)", () => {
   });
 
   describe(".concat(...suites: Suite: []): Suite", () => {
-    const a = new Suite(null).it("i").it("ii");
-    const b = new Suite(null).it("iii").it("iv");
-    const c = new Suite(null).it("v").it("vi");
-    let d: Suite;
+    const a = new Suite(null).it("i").parent.it("ii").parent;
+    const b = new Suite(null).it("iii").parent.it("iv").parent;
+    const c = new Suite(null).it("v").parent.it("vi").parent;
+    let d: ISuite;
 
     beforeEach(() => {
       d = a.concat(b, c);
@@ -1053,9 +1061,9 @@ describe("new Suite(description)", () => {
     beforeEach(() => {
       subject
         .it("should work")
-        .it("should work async", async () => {})
-        .it("should work too")
-        .it("gonna fail", () => {
+        .parent.it("should work async", async () => {})
+        .parent.it("should work too")
+        .parent.it("gonna fail", () => {
           throw new Error("contrived failure");
         });
     });
@@ -1317,13 +1325,13 @@ describe("new Suite(description, { listeners })", () => {
         expect(pendingSpy.calledTwice).to.be.true;
       });
 
-      const subject: Suite = new Suite("pending fires each time", {
+      const subject = new Suite("pending fires each time", {
         listeners: {
           pending: [pendingSpy],
         },
       })
         .it("test 1", spec1Spy)
-        .it("test 2", spec2Spy);
+        .parent.it("test 2", spec2Spy).parent;
 
       await exhaust(subject.reports());
 
@@ -1338,14 +1346,14 @@ describe("new Suite(description, { listeners })", () => {
       });
       const specSpy = spy();
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
             pending: [pendingSpy],
           },
         },
-      ).it("should be skipped", specSpy);
+      ).it("should be skipped", specSpy).parent;
 
       await exhaust(subject.reports());
 
@@ -1357,7 +1365,7 @@ describe("new Suite(description, { listeners })", () => {
       const pendingSpy = spy();
       const specSpy = spy();
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
@@ -1366,7 +1374,7 @@ describe("new Suite(description, { listeners })", () => {
         },
       )
         .xit("would pass but is skipped", specSpy)
-        .it("is a mere stub");
+        .parent.it("is a mere stub").parent;
 
       await exhaust(subject.reports());
 
@@ -1384,7 +1392,7 @@ describe("new Suite(description, { listeners })", () => {
         expect(pendingSpy.calledOnce).to.be.true;
       });
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
@@ -1393,7 +1401,7 @@ describe("new Suite(description, { listeners })", () => {
         },
       )
         .it("runs... oh, does it run... yes! yes! IT'S ALIVE!!!", specSpy)
-        .it("is a mere stub");
+        .parent.it("is a mere stub").parent;
 
       await exhaust(subject.reports());
 
@@ -1413,14 +1421,14 @@ describe("new Suite(description, { listeners })", () => {
 
       const specSpy = spy();
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
             pending: [pendingSpy1, pendingSpy2],
           },
         },
-      ).it("should be skipped", specSpy);
+      ).it("should be skipped", specSpy).parent;
 
       await exhaust(subject.reports());
 
@@ -1440,13 +1448,13 @@ describe("new Suite(description, { listeners })", () => {
         expect(completeSpy.called).to.be.false;
       });
 
-      const subject: Suite = new Suite("pending fires each time", {
+      const subject = new Suite("pending fires each time", {
         listeners: {
           complete: [completeSpy],
         },
       })
         .it("test 1", spec1Spy)
-        .it("test 2", spec2Spy);
+        .parent.it("test 2", spec2Spy).parent;
 
       await exhaust(subject.reports());
 
@@ -1461,14 +1469,14 @@ describe("new Suite(description, { listeners })", () => {
       });
       const specSpy = spy();
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
             complete: [completeSpy],
           },
         },
-      ).it("passes with flying colors", specSpy);
+      ).it("passes with flying colors", specSpy).parent;
 
       for await (const report of subject.reports()) {
         expect(report.ok).to.be.false; // B-but!
@@ -1486,14 +1494,14 @@ describe("new Suite(description, { listeners })", () => {
         expect("eleventynine").to.be.instanceOf(Number);
       });
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
             complete: [completeSpy],
           },
         },
-      ).it("doesn't like that", specSpy);
+      ).it("doesn't like that", specSpy).parent;
 
       for await (const report of subject.reports()) {
         expect(report.ok).to.be.false; // B-but!
@@ -1512,14 +1520,14 @@ describe("new Suite(description, { listeners })", () => {
         expect("up").to.equal("down");
       });
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
             complete: [completeSpy],
           },
         },
-      ).it("fails woefully", specSpy);
+      ).it("fails woefully", specSpy).parent;
 
       for await (const report of subject.reports()) {
         expect(report.ok).to.be.true;
@@ -1537,7 +1545,7 @@ describe("new Suite(description, { listeners })", () => {
       });
       const specSpy = spy();
 
-      const subject: Suite = new Suite(
+      const subject = new Suite(
         "pending listener is capable of skipping the test",
         {
           listeners: {
@@ -1546,7 +1554,7 @@ describe("new Suite(description, { listeners })", () => {
         },
       )
         .xit("would pass but is skipped", specSpy)
-        .it("is a mere stub");
+        .parent.it("is a mere stub").parent;
 
       await exhaust(subject.reports());
 
@@ -1567,11 +1575,11 @@ describe("new Suite(description, { listeners })", () => {
         expect(spy1.called).to.be.false;
         expect(spy2.called).to.be.false;
       });
-      const subject: Suite = new Suite("multiple complete listeners", {
+      const subject = new Suite("multiple complete listeners", {
         listeners: {
           complete: [spy1, spy2],
         },
-      }).it("passes elegantly", specSpy);
+      }).it("passes elegantly", specSpy).parent;
 
       await exhaust(subject.reports());
 
@@ -1587,12 +1595,12 @@ describe("new Suite(description, { listeners })", () => {
       const completeSpy = spy();
       const specSpy = spy();
 
-      const subject: Suite = new Suite("typical plugin", {
+      const subject = new Suite("typical plugin", {
         listeners: {
           pending: [pendingSpy],
           complete: [completeSpy],
         },
-      }).it("should run", specSpy);
+      }).it("should run", specSpy).parent;
 
       await exhaust(subject.reports());
 
@@ -1625,7 +1633,7 @@ describe('the correct "this" bindings', () => {
       function() {
         that = this;
       },
-    );
+    ).parent;
 
     await exhaust(suite.run());
     expect(that).to.equal(suite.specs[0]);
@@ -1637,10 +1645,10 @@ describe('the correct "this" bindings', () => {
       .beforeEach(function() {
         thatBefore = this;
       })
-      .afterEach(function() {
+      .parent.afterEach(function() {
         thatAfter = this;
       })
-      .it("passes", () => {});
+      .parent.it("passes", () => {}).parent;
 
     await exhaust(suite.run());
     expect(thatBefore)
@@ -1654,10 +1662,10 @@ describe('the correct "this" bindings', () => {
       .beforeAll(function() {
         thatBefore = this;
       })
-      .afterAll(function() {
+      .parent.afterAll(function() {
         thatAfter = this;
       })
-      .it("passes", () => {});
+      .parent.it("passes", () => {}).parent;
 
     await exhaust(suite.run());
     expect(thatBefore)

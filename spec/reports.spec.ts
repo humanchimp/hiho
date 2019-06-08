@@ -5,8 +5,8 @@ import { reports } from "../src/reports";
 describe("the reports helper", () => {
   it("should return an asynchronous iterator over the suite reports", async () => {
     for await (const report of reports([
-      createSuite("first suite").it("should run"),
-      createSuite("second suite").it("should run"),
+      createSuite("first suite").it("should run").parent,
+      createSuite("second suite").it("should run").parent,
     ])) {
       expect(report.description).to.match(/should run/);
       expect(report.skipped).to.be.true;
@@ -16,7 +16,7 @@ describe("the reports helper", () => {
 
   it("should splat and run a single suite", async () => {
     for await (const report of reports(
-      createSuite("first suite").it("should run"),
+      createSuite("first suite").it("should run").parent,
     )) {
       expect(report.description).to.match(/should run/);
       expect(report.skipped).to.be.true;
@@ -31,22 +31,22 @@ describe("the reports helper", () => {
       [
         createSuite(null)
           .it("l")
-          .it("m")
-          .it("n")
-          .it("o")
-          .it("p"),
+          .parent.it("m")
+          .parent.it("n")
+          .parent.it("o")
+          .parent.it("p").parent,
         createSuite(null)
           .it("z")
-          .it("y")
-          .it("x")
-          .it("w")
-          .it("v"),
+          .parent.it("y")
+          .parent.it("x")
+          .parent.it("w")
+          .parent.it("v").parent,
         createSuite(null)
           .it("a")
-          .it("b")
-          .it("c")
-          .it("d")
-          .it("e"),
+          .parent.it("b")
+          .parent.it("c")
+          .parent.it("d")
+          .parent.it("e").parent,
       ],
       array =>
         array.sort((a, b) =>
