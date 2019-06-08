@@ -16,6 +16,7 @@ import {
   Hook,
   SpecOptions,
   SpecParams,
+  SpecMeta,
 } from "./interfaces";
 import { Spec } from "./Spec";
 import { Hooks } from "./Hooks";
@@ -31,7 +32,6 @@ interface ComputedHooks {
 
   afterEach: Effect[];
 }
-
 
 export class Suite implements ISuite {
   static empty = empty;
@@ -58,7 +58,7 @@ export class Suite implements ISuite {
 
   listeners: ListenersInterface;
 
-  infos: any[] = [];
+  meta: SpecMeta;
 
   private focusMode: boolean = false;
 
@@ -73,6 +73,7 @@ export class Suite implements ISuite {
       skipped = false,
       focused = false,
       listeners = undefined,
+      infos = undefined,
     }: SuiteParams = {},
   ) {
     this.description = description;
@@ -80,6 +81,9 @@ export class Suite implements ISuite {
     this.skipped = skipped;
     this.focused = focused;
     this.listeners = new Listeners(listeners);
+    this.meta = {
+      infos: infos || [],
+    };
   }
 
   get isFocusMode() {
@@ -103,7 +107,12 @@ export class Suite implements ISuite {
   }
 
   info(info: any = required()): Suite {
-    this.infos.push(info);
+    this.meta.infos.push(info);
+    return this;
+  }
+
+  timeout(ms: number = required()) {
+    this.meta.timeout = ms;
     return this;
   }
 

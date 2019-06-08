@@ -72,13 +72,24 @@ export interface SpecOptions {
   skipped?: boolean;
 }
 
-export interface SpecParams extends SpecOptions {
+export interface SpecParams {
+  test?: Effect;
+  focused?: boolean;
+  skipped?: boolean;
   description: string;
   parent?: ISuite;
+  infos?: any[];
+  timeout?: number;
 }
 
-export interface ISpec extends SpecParams {
+export interface ISpec {
+  test?: Effect;
+  focused?: boolean;
+  skipped?: boolean;
   meta: SpecMeta;
+  description: string;
+  parent?: ISuite;
+  infos?: any[];
   timeout(ms: number): ISpec;
   run(): AsyncIterableIterator<Report>;
 }
@@ -137,6 +148,8 @@ export interface SuiteParams {
   skipped?: boolean;
   focused?: boolean;
   listeners?: ListenersParam;
+  infos?: any[];
+  timeout?: number;
 }
 
 export interface ISelection {

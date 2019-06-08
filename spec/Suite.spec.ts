@@ -1676,7 +1676,7 @@ describe('the correct "this" bindings', () => {
         subject
           .info(a)
           .info(b)
-          .info(c).infos,
+          .info(c).meta.infos,
       ).to.eql([a, b, c]);
     });
   });
