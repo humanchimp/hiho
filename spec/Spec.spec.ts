@@ -9,7 +9,7 @@ describe("new Spec() properties of new instances", () => {
   beforeEach(() => {
     spec = new Spec({
       description: "boring",
-      test() {},
+      hook() {},
     });
   });
 

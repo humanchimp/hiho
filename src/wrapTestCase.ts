@@ -1,4 +1,6 @@
-export function wrapTestCase(test) {
+import { Effect } from "./interfaces";
+
+export function wrapTestCase(test: Effect): Effect {
   if (test == null || test.length === 0) {
     return test;
   }

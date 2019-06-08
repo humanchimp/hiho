@@ -1,20 +1,17 @@
-import { Hooks as HooksInterface, Effect, Hook } from "./interfaces";
+import { Hooks as HooksInterface, IHook, HookName } from "./interfaces";
 
 export class Hooks implements HooksInterface {
-  beforeAll: Effect[] = [];
+  beforeAll: IHook[] = [];
 
-  afterAll: Effect[] = [];
+  afterAll: IHook[] = [];
 
-  beforeEach: Effect[] = [];
+  beforeEach: IHook[] = [];
 
-  afterEach: Effect[] = [];
+  afterEach: IHook[] = [];
 
-  *run(hookName: string): IterableIterator<Hook> {
-    for (const effect of this[hookName]) {
-      yield {
-        name: hookName,
-        effect,
-      };
+  *run(hookName: HookName): IterableIterator<IHook> {
+    for (const hook of this[hookName]) {
+      yield hook as IHook;
     }
   }
 }

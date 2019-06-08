@@ -1,16 +1,14 @@
 import {
   ISpec,
   SpecMeta,
-  Effect,
   SpecParams,
   ISuite,
   Report,
 } from "./interfaces";
+import { Hook } from "./Hook";
 
-export class Spec implements ISpec {
+export class Spec extends Hook implements ISpec {
   description: string;
-
-  test: Effect;
 
   focused: boolean;
 
@@ -23,32 +21,14 @@ export class Spec implements ISpec {
   constructor({
     description,
     parent,
-    test,
+    hook,
     focused = false,
     skipped = false,
   }: SpecParams) {
+    super("spec", parent, hook);
     this.description = description;
-    this.test = test;
     this.focused = focused;
     this.skipped = skipped;
-    Object.defineProperty(this, "parent", {
-      get() {
-        return parent;
-      },
-    });
-  }
-
-  timeout(ms: number): Spec {
-    this.meta.timeout = ms;
-    return this;
-  }
-
-  info(info: any) {
-    if (this.meta.infos == null) {
-      this.meta.infos = [];
-    }
-    this.meta.infos.push(info);
-    return this;
   }
 
   run(): AsyncIterableIterator<Report> {

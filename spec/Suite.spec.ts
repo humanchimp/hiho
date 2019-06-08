@@ -1,7 +1,7 @@
 /* eslint no-undef: off, no-unused-vars: off, @typescript-eslint/no-unused-vars: off */
 import { expect } from "chai";
 import { spy, SinonSpy } from "sinon";
-import { ISuite } from "../src/interfaces";
+import { ISuite, HookName, Effect, ISpec } from "../src/interfaces";
 import { Suite } from "../src/Suite";
 import { Hooks } from "../src/Hooks";
 import { Listeners } from "../src/Listeners";
@@ -470,7 +470,7 @@ describe("new Suite(description)", () => {
         });
 
         describe("the appended spec", () => {
-          let spec;
+          let spec: ISpec;
 
           beforeEach(() => {
             [spec] = subject.specs;
@@ -489,7 +489,7 @@ describe("new Suite(description)", () => {
           });
 
           it("should have the given test, if any", () => {
-            expect(spec.test).to.equal(expected.test);
+            expect(spec.effect).to.equal(expected.test);
           });
         });
       });
@@ -606,7 +606,9 @@ describe("new Suite(description)", () => {
         it("should append the hooks in the correct order", () => {
           subject[hook](a);
           subject[hook](b);
-          expect(subject.hooks[hook]).to.eql(expected);
+          expect(subject.hooks[hook as HookName].map(it => it.effect)).to.eql(
+            expected,
+          );
         });
 
         it("should call the hooks when the spec is run", async () => {
@@ -642,8 +644,8 @@ describe("new Suite(description)", () => {
         s.describe("suite c", s2 => s2.it("test c", specSpyC)),
       )
       .parent.beforeAll(beforeSpy)
-      .afterAll(afterSpy)
-      .reports());
+      .parent.afterAll(afterSpy)
+      .parent.reports());
 
     expect(beforeSpy.calledOnce).to.be.true;
     expect(specSpyA.calledOnce).to.be.true;
@@ -668,8 +670,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should return an empty async iterator", async () => {
@@ -703,8 +705,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should bail midway", async () => {
@@ -732,8 +734,8 @@ describe("new Suite(description)", () => {
 
       const subject = new Suite("reopen an open suite")
         .beforeAll(spy1)
-        .beforeAll(spy2)
-        .it("does nothing", specSpy).parent;
+        .parent.beforeAll(spy2)
+        .parent.it("does nothing", specSpy).parent;
 
       await exhaust(subject.open());
       await exhaust(subject.open()); // reopening
@@ -754,7 +756,7 @@ describe("new Suite(description)", () => {
             .describe("open a grandchild suite", s2 => s2.beforeAll(innerSpy))
             .parent.beforeAll(middleSpy),
         )
-        .parent.beforeAll(outerSpy);
+        .parent.beforeAll(outerSpy).parent;
       const innerSuite = subject.suites[0].suites[0];
 
       await exhaust(innerSuite.open());
@@ -770,7 +772,7 @@ describe("new Suite(description)", () => {
       it("should not call the `afterAll` hooks", async () => {
         const hookSpy = spy();
 
-        subject.afterAll(hookSpy).afterAll(hookSpy);
+        subject.afterAll(hookSpy).parent.afterAll(hookSpy);
         await exhaust(subject.close());
         expect(hookSpy.called).to.be.false;
       });
@@ -788,8 +790,8 @@ describe("new Suite(description)", () => {
 
         subject
           .afterAll(spy1)
-          .afterAll(spy2)
-          .afterAll(spy3);
+          .parent.afterAll(spy2)
+          .parent.afterAll(spy3);
 
         await exhaust(subject.open());
       });
@@ -825,8 +827,8 @@ describe("new Suite(description)", () => {
 
         subject
           .beforeAll(spy1)
-          .beforeAll(spy2)
-          .beforeAll(spy3);
+          .parent.beforeAll(spy2)
+          .parent.beforeAll(spy3);
       });
 
       it("should bail midway", async () => {
@@ -1643,10 +1645,10 @@ describe('the correct "this" bindings', () => {
       .beforeEach(function() {
         thatBefore = this;
       })
-      .afterEach(function() {
+      .parent.afterEach(function() {
         thatAfter = this;
       })
-      .it("passes", () => {}).parent;
+      .parent.it("passes", () => {}).parent;
 
     await exhaust(suite.run());
     expect(thatBefore)
@@ -1660,10 +1662,10 @@ describe('the correct "this" bindings', () => {
       .beforeAll(function() {
         thatBefore = this;
       })
-      .afterAll(function() {
+      .parent.afterAll(function() {
         thatAfter = this;
       })
-      .it("passes", () => {}).parent;
+      .parent.it("passes", () => {}).parent;
 
     await exhaust(suite.run());
     expect(thatBefore)
