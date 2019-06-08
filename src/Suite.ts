@@ -58,6 +58,8 @@ export class Suite implements ISuite {
 
   listeners: ListenersInterface;
 
+  infos: any[] = [];
+
   private focusMode: boolean = false;
 
   private opened: boolean = false;
@@ -101,7 +103,7 @@ export class Suite implements ISuite {
   }
 
   info(info: any = required()): Suite {
-    this.it(descriptionForInfo(info), undefined, { skipped: true });
+    this.infos.push(info);
     return this;
   }
 

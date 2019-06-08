@@ -406,15 +406,6 @@ describe("new Suite(description)", () => {
     "method signature which appends a spec",
     [
       [
-        ".info(description)",
-        desc => subject.info(desc),
-        {
-          skipped: true,
-          focused: false,
-          test: undefined,
-        },
-      ],
-      [
         ".it(description)",
         desc => subject.it(desc),
         {
@@ -1255,7 +1246,6 @@ describe("new Suite(description)", () => {
   describeEach(
     "erroneous method signature",
     [
-      [".info()", () => subject.info(), /required/],
       [".it()", () => subject.it(), /required/],
       [".xit()", () => subject.xit(), /required/],
       [".fit()", () => (subject as any).fit(), /required/],
@@ -1673,6 +1663,22 @@ describe('the correct "this" bindings', () => {
     expect(thatBefore)
       .to.equal(thatAfter)
       .and.equal(suite);
+  });
+
+  describe("new Suite().info(info: any)", () => {
+    it("should accumulate objects in the `metas` property", () => {
+      const subject = new Suite(null);
+      const a = {},
+        b = {},
+        c = {};
+
+      expect(
+        subject
+          .info(a)
+          .info(b)
+          .info(c).infos,
+      ).to.eql([a, b, c]);
+    });
   });
 }).info("https://github.com/humanchimp/stable/issues/60");
 

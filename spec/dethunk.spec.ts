@@ -133,27 +133,6 @@ describe("the dethunk helper", () => {
           },
         ],
       ],
-      [
-        (
-          _describe,
-          _xdescribe,
-          _fdescribe,
-          _describeEach,
-          _xdescribeEach,
-          _fdescribeEach,
-          _it,
-          _xit,
-          _fit,
-          _beforeAll,
-          _afterAll,
-          _beforeEach,
-          _afterEach,
-          _info,
-        ) => {
-          _info("an info annotation");
-        },
-        [{ description: "an info annotation", ok: true, skipped: true }],
-      ],
     ],
     ([thunk, reports]) => {
       it("should dethunk the thunk expectedly", async () => {
