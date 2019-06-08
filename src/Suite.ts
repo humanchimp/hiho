@@ -140,7 +140,7 @@ export class Suite implements ISuite {
     description: string = required(),
     test?: Effect,
     options?: SpecOptions,
-  ): Suite {
+  ): Spec {
     const params: SpecParams = {
       parent: this,
       skipped: test == null || this.skipped,
@@ -152,26 +152,27 @@ export class Suite implements ISuite {
     if (params.focused) {
       this.isFocusMode = true;
     }
-    this.specs.push(new Spec(params));
-    return this;
+
+    const spec = new Spec(params)
+
+    this.specs.push(spec);
+    return spec;
   }
 
   fit(
     description: string,
     test: Effect = required(),
     options?: SpecOptions,
-  ): Suite {
-    this.it(description, test, { ...options, focused: true });
-    return this;
+  ): Spec {
+    return this.it(description, test, { ...options, focused: true });
   }
 
   xit(
     description: string = required(),
     test?: Effect,
     options?: SpecOptions,
-  ): Suite {
-    this.it(description, test, { ...options, skipped: true });
-    return this;
+  ): Spec {
+    return this.it(description, test, { ...options, skipped: true });
   }
 
   defaultOptions(options?: SuiteParams): SuiteParams {
@@ -195,7 +196,7 @@ export class Suite implements ISuite {
 
     closure(suite);
     this.suites.push(suite);
-    return this;
+    return suite;
   }
 
   fdescribe(
@@ -203,8 +204,7 @@ export class Suite implements ISuite {
     closure: SuiteClosure,
     options?: SuiteParams,
   ): Suite {
-    this.describe(description, closure, { ...options, focused: true });
-    return this;
+    return this.describe(description, closure, { ...options, focused: true });
   }
 
   xdescribe(
@@ -212,8 +212,7 @@ export class Suite implements ISuite {
     closure: SuiteClosure,
     options?: SuiteParams,
   ): Suite {
-    this.describe(description, closure, { ...options, skipped: true });
-    return this;
+    return this.describe(description, closure, { ...options, skipped: true });
   }
 
   describeEach(
@@ -241,7 +240,7 @@ export class Suite implements ISuite {
       );
     }
     this.suites.push(suite);
-    return this;
+    return suite;
   }
 
   fdescribeEach(
@@ -250,11 +249,10 @@ export class Suite implements ISuite {
     closure: TableClosure,
     options?: SuiteParams,
   ): Suite {
-    this.describeEach(description, table, closure, {
+    return this.describeEach(description, table, closure, {
       ...options,
       focused: true,
     });
-    return this;
   }
 
   xdescribeEach(
@@ -263,11 +261,10 @@ export class Suite implements ISuite {
     closure: TableClosure,
     options?: SuiteParams,
   ): Suite {
-    this.describeEach(description, table, closure, {
+    return this.describeEach(description, table, closure, {
       ...options,
       skipped: true,
     });
-    return this;
   }
 
   *orderedJobs(): IterableIterator<Job> {

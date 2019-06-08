@@ -44,9 +44,9 @@ export interface ISuite {
     closure: TableClosure,
     options?: SuiteParams,
   ): ISuite;
-  it(description: string, test?: Effect, options?: SpecOptions): ISuite;
-  xit(description: string, test?: Effect, options?: SpecOptions): ISuite;
-  fit(description: string, test: Effect, options?: SpecOptions): ISuite;
+  it(description: string, test?: Effect, options?: SpecOptions): ISpec;
+  xit(description: string, test?: Effect, options?: SpecOptions): ISpec;
+  fit(description: string, test: Effect, options?: SpecOptions): ISpec;
   beforeAll(hook: Effect): ISuite;
   beforeEach(hook: Effect): ISuite;
   afterAll(hook: Effect): ISuite;
@@ -64,6 +64,7 @@ export interface ISuite {
   open(): AsyncIterableIterator<Report>;
   close(): AsyncIterableIterator<Report>;
   runSpec(spec: ISpec): AsyncIterableIterator<Report>;
+  concat(a: ISuite, b: ISuite): ISuite;
 }
 
 export interface SpecOptions {

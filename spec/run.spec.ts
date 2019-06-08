@@ -2,6 +2,8 @@ import { expect } from "chai";
 import { spy as createSpy, SinonSpy } from "sinon";
 import { describe as createSuite } from "../src/describe";
 import { run, generator } from "../src/run";
+import { ISuite } from "../src";
+
 
 async function* generate(_, sort) {
   const result = [1, 2, 3];
@@ -12,13 +14,13 @@ async function* generate(_, sort) {
 
 describe("run", () => {
   describe("when an array of suites is passed", () => {
-    let suites;
+    let suites: ISuite[];
 
     beforeEach(() => {
       suites = [
-        createSuite(null).it("should run"),
-        createSuite(null).it("should run 2"),
-        createSuite(null).it("should run 3"),
+        createSuite(null).it("should run").parent,
+        createSuite(null).it("should run 2").parent,
+        createSuite(null).it("should run 3").parent,
       ];
     });
 
@@ -63,13 +65,13 @@ describe("run", () => {
   });
 
   describe("when a single suite is passed", () => {
-    let suite;
+    let suite: ISuite;
 
     beforeEach(() => {
       suite = createSuite(null)
-        .it("should run")
-        .it("should also run")
-        .it("should run three");
+        .it("should run").parent
+        .it("should also run").parent
+        .it("should run three").parent;
     });
 
     it("should pull the specs out of the default generator", async () => {
@@ -110,9 +112,9 @@ describe("generator", () => {
   beforeEach(() => {
     spy = createSpy();
     suite = createSuite(null)
-      .it("should run", spy)
-      .it("stub")
-      .xit("skipped");
+      .it("should run", spy).parent
+      .it("stub").parent
+      .xit("skipped").parent;
   });
 
   describe("generator(suite: Suite)", () => {

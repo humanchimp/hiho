@@ -1,9 +1,9 @@
-import { Report, Sorter, JobPredicate } from "./interfaces";
+import { Report, Sorter, JobPredicate, ISuite } from "./interfaces";
 import { Suite } from "./Suite";
 import { shuffle } from "./shuffle";
 
 export async function* reports(
-  suites: Suite | Suite[],
+  suites: ISuite | ISuite[],
   sort: Sorter = shuffle,
   predicate?: JobPredicate,
 ): AsyncIterableIterator<Report> {

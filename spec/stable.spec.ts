@@ -2,8 +2,9 @@ import { expect } from "chai";
 import { spy as createSpy } from "sinon";
 import { accumulate } from "./util/accumulate";
 import { describe as createSuite } from "../src/describe";
+import { ISuite } from "../src";
 
-let subject;
+let subject: ISuite;
 
 describe("group", () => {
   describe("instance methods", () => {
@@ -29,7 +30,7 @@ describe("group", () => {
 
     describe("Suite#reports", () => {
       beforeEach(() => {
-        subject.it("a", () => {}).it("b", () => {});
+        subject.it("a", () => {}).parent.it("b", () => {});
       });
 
       it("asynchronously yields reports", async () => {
@@ -48,21 +49,25 @@ describe("group", () => {
 
     describe("Suite#xdescribe", () => {
       beforeEach(() => {
-        subject.xdescribe("xdescribe", s1 =>
-          s1
-            .it("should pass", () => {})
-            .it("should fail", () => {
-              expect(true).to.be.false;
-            })
-            .describe("inner suite", s2 =>
-              s2
-                .it("should pass", () => {})
-                .it("should fail", () => {
-                  expect(true).to.be.false;
-                })
-                .xit("would pass")
-                .xit("would fail"),
-            ),
+        subject.xdescribe(
+          "xdescribe",
+          s1 =>
+            s1
+              .it("should pass", () => {})
+              .parent.it("should fail", () => {
+                expect(true).to.be.false;
+              })
+              .parent.describe(
+                "inner suite",
+                s2 =>
+                  s2
+                    .it("should pass", () => {})
+                    .parent.it("should fail", () => {
+                      expect(true).to.be.false;
+                    })
+                    .parent.xit("would pass")
+                    .parent.xit("would fail").parent,
+              ).parent,
         );
       });
 
