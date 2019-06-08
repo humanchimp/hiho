@@ -4,3 +4,4 @@ src
 spec
 tsconfig.json
 .stablerc.yml
+cloudbuild.yaml
