@@ -1,7 +1,7 @@
 /* eslint no-undef: off, no-unused-vars: off, @typescript-eslint/no-unused-vars: off */
 import { expect } from "chai";
 import { spy, SinonSpy } from "sinon";
-import { ISuite, HookName, Effect, ISpec } from "../src/interfaces";
+import { ISuite, HookName, ISpec, Report } from "../src/interfaces";
 import { Suite } from "../src/Suite";
 import { Hooks } from "../src/Hooks";
 import { Listeners } from "../src/Listeners";
@@ -1077,6 +1077,28 @@ describe("new Suite(description)", () => {
       });
 
       it("should iterate in shuffle order"); // No good way to test this?
+
+      describe("spec reference of each report", () => {
+        let report: Report, suite: ISuite, spec: ISpec;
+
+        beforeEach(async () => {
+          spec = new Suite(null).it("test");
+          ({ parent: suite } = spec);
+          ({ value: report } = await suite.reports().next());
+        });
+
+        it("should point to the spec which was used to generate the report", () => {
+          expect(report.spec).to.equal(spec);
+        });
+
+        it("should be non-enumerable", () => {
+          expect(Object.getOwnPropertyDescriptor(report, "spec").enumerable).to.be.false;
+        });
+
+        it("should not throw JSON circularity errors", () => {
+          expect(() => JSON.stringify(report)).not.to.throw();
+        });
+      });
     });
 
     describe(".reports(sorter)", () => {

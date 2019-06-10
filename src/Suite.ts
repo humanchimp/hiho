@@ -440,12 +440,15 @@ export class Suite implements ISuite {
     let { skipped } = spec;
 
     if (skipped || (this.isFocusMode && !focused)) {
-      return {
+      const report = {
         description,
         ok: true,
         skipped: true,
         ...meta,
       };
+
+      Object.defineProperty(report, "spec", { value: spec });
+      return report;
     }
     const report: Report = { ...this.defaultOptions(), description };
 
@@ -473,6 +476,9 @@ export class Suite implements ISuite {
         report.ok = true;
       }
     }
+
+    Object.defineProperty(report, "spec", { value: spec });
+
     for (const notify of this.listeners.complete) {
       notify(report, fail);
     }
