@@ -858,10 +858,10 @@
     semver "^6.1.1"
     ua-parser-js "^0.7.20"
 
-"@wessberg/rollup-plugin-ts@^1.1.57":
-  version "1.1.57"
-  resolved "https://registry.yarnpkg.com/@wessberg/rollup-plugin-ts/-/rollup-plugin-ts-1.1.57.tgz#405c6b7c3f6bb5e783e0435e6a787fb347cae1f3"
-  integrity sha512-SAsWsa+chj6tJyCbr8eBqc/DmSNIetUQkwFEuUd3kYtm/M7s0hhkrCcHKGbFc/BCkK+KvXj+113UHCWbTnWQCw==
+"@wessberg/rollup-plugin-ts@^1.1.58":
+  version "1.1.58"
+  resolved "https://registry.yarnpkg.com/@wessberg/rollup-plugin-ts/-/rollup-plugin-ts-1.1.58.tgz#650f3ef754543c675fb7d2ce3d24ab374fe0282d"
+  integrity sha512-5OHEJX5t5aFD2cj7wg/iH2n+3aslHfEXQmNr3bJL8e+f6DY1lMGKN+6Yrn1fP11oLSbZAzOpHf9ynU2hzUp0/w==
   dependencies:
     "@babel/core" "^7.4.5"
     "@babel/plugin-proposal-async-generator-functions" "^7.2.0"
