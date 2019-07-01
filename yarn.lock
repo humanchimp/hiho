@@ -706,10 +706,10 @@
   resolved "https://registry.yarnpkg.com/@topl/stable-plugin-timing/-/stable-plugin-timing-0.5.5.tgz#090727b586d93e43e6171266b473f2f70741a442"
   integrity sha512-S8bhbV/KazGcuhfHgmWzrEqG+LFZzZYiUqiekFjdULeNcmf5u4Vcq69JpCxaXot4VEi8SMBFoIAQhoymDwgSBw==
 
-"@topl/stable@^0.5.22":
-  version "0.5.22"
-  resolved "https://registry.yarnpkg.com/@topl/stable/-/stable-0.5.22.tgz#7919713b91973c5bb49ac7168013432de56276f3"
-  integrity sha512-wtMq+s3iWmUuNnBZSmwG9nX2J/DGNqsD54LehJIvEOyTOCPkm60JVc1XTkgNmVm5Q4pWAZbzS2ygcyUzvpMaog==
+"@topl/stable@^0.5.23":
+  version "0.5.23"
+  resolved "https://registry.yarnpkg.com/@topl/stable/-/stable-0.5.23.tgz#019943e7cbabfc35a83596c4e8ba2d669559794d"
+  integrity sha512-sy0uVU5rwpPVMsPziRz85bbiuXwXFcrSjftT/mmeL8hLT6H6CIefTAN7lLungS9iUTQa4Y6h+uKcMs4LzNjJIw==
   dependencies:
     "@babel/core" "^7.2.0"
     "@babel/generator" "^7.2.2"
