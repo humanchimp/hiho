@@ -14,7 +14,7 @@
     "prepublishOnly": "yarn test && yarn build && mv dist/cjs/hiho.d.ts* dist && rm dist/*/hiho.d.ts*"
   },
   "devDependencies": {
-    "@topl/stable": "^0.5.22",
+    "@topl/stable": "^0.5.23",
     "@wessberg/rollup-plugin-ts": "^1.1.59",
     "chai": "^4.2.0",
     "nyc": "^14.1.1",
